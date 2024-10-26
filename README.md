@@ -178,5 +178,8 @@ admin.site.register(Question)
 http://127.0.0.1:svkan8000/admin/  
 
 
-Nun ist die app verbunden und es können die Registrierten Modelle bearbeiten werden  
-also, Datensätze können hinzugefügt werden.
+Nun ist poll_app verbunden und es können die Registrierten Modelle bearbeitet werden  
+also, Datensätze können hinzugefügt oder geändert werden werden.
+
+
+## TODO: https://docs.djangoproject.com/en/5.1/intro/tutorial03/
