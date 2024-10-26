@@ -12,10 +12,9 @@
     <div class="quiz-container">
         <h2 class="question">{{question}}</h2>
         <div class="options">
-            <button onclick="selectAnswer('A')">A. Berlin</button>
-            <button onclick="selectAnswer('B')">B. Madrid</button>
-            <button onclick="selectAnswer('C')">C. Paris</button>
-            <button onclick="selectAnswer('D')">D. Rome</button>
+            {% for answer in question.answers.all %}
+            <button onclick="selectAnswer('{{answer.votes}}')">{{answer.choice_text}}</button>  
+            {% endfor %}     
         </div>
         <div id="result" class="result"></div>
     </div>
@@ -23,7 +22,7 @@
     <script>
         function selectAnswer(answer) {
             const result = document.getElementById('result');
-            result.innerHTML = `You selected answer: ${answer}`;
+            result.innerHTML = (answer == '1') ? `Top Anwort. Das ist die Richtige Anwort` : `Knapp daneben, falsche Antwort` ;
         }
     </script>
 </body>
