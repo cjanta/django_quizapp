@@ -113,7 +113,7 @@ urlpatterns = [
 
 
 ## Datenbank anlegen
-"django\poll_site\poll_app\" File: models.py
+"django\poll_site\poll_app\" File: **models.py**
 ````py
 from django.db import models
 
@@ -130,7 +130,7 @@ class Choice(models.Model):
 ````
 
 ## Angelegte Datenbank modelle aktivieren
-"django\poll_site\poll_site\urls.py" File: settings.py
+"django\poll_site\poll_site\" File: **settings.py**
 - Bei INSTALLED_APPS 'poll_app' hinzufügen
 ````py
 INSTALLED_APPS = [
@@ -153,3 +153,30 @@ Migrationen ausführen
 **TEST: Datenbank Table in db.sqlite3 überprüfen.** 
 - poll_app_choice
 - poll_app_question
+
+## Hinzufügen von Datensätzen
+- TODO: Migration von einer csv
+- interaktive shell: python manage.py shell
+- oder mit der Django Admin Seite
+
+## Django Admin
+- python manage.py createsuperuser
+- nache dem anlegen des superusers
+- python manage.py runserver
+- http://127.0.0.1:svkan8000/admin/
+
+## poll_app in der admin seite registrieren
+"django\poll_site\poll_site\" File **admin.py**
+````py
+from django.contrib import admin
+
+from .models import Question
+
+admin.site.register(Question)
+
+````
+http://127.0.0.1:svkan8000/admin/  
+
+
+Nun ist die app verbunden und es können die Registrierten Modelle bearbeiten werden  
+also, Datensätze können hinzugefügt werden.
