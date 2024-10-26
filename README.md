@@ -93,7 +93,7 @@ urlpatterns = [
    path('', views.hello_world),
 ]
 ````
-## django\poll_site\urls.py, globale url-Konfiguration der Website anpassen
+## django\poll_site\poll_site\urls.py, globale url-Konfiguration der Website anpassen
 
 Sollte danach im wesentlichen wie folgt ausssehen:
 
@@ -110,3 +110,46 @@ urlpatterns = [
 ## TEST: Server starten und Website testen
 - shell: python manage.py runserver
 - http://127.0.0.1:8000/
+
+
+## Datenbank anlegen
+"django\poll_site\poll_app\" File: models.py
+````py
+from django.db import models
+
+
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField("date published")
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+````
+
+## Angelegte Datenbank modelle aktivieren
+"django\poll_site\poll_site\urls.py" File: settings.py
+- Bei INSTALLED_APPS 'poll_app' hinzufügen
+````py
+INSTALLED_APPS = [
+    'poll_app',
+````
+- in den Ordner von manage.py wechseln
+- python manage.py makemigrations poll_app
+
+Es sollten nun "Modell Migrationen" für Question und Choice angelegt worden sein
+````
+Migrations for 'poll_app':
+  poll_app\migrations\0001_initial.py
+    + Create model Question
+    + Create model Choice
+````
+
+Migrationen ausführen
+- python manage.py migrate
+
+**TEST: Datenbank Table in db.sqlite3 überprüfen.** 
+- poll_app_choice
+- poll_app_question
