@@ -1,9 +1,8 @@
-# Poll Tutorial
+# Poll mit Django Tutorial
 
-https://docs.djangoproject.com/en/5.1/intro/tutorial01/
-
-- python installation erforderlich
-- OS Pfandvariable einrichten um nicht immer den ganzen Pfad in der Shell eingeben zu müssen
+- https://docs.djangoproject.com/en/5.1/intro/tutorial01/
+- python Installation erforderlich
+- OS Pfadvariable einrichten um nicht immer den ganzen Pfad in der Shell eingeben zu müssen
 
 # Vorbereitung/Setup des Repositories
 
@@ -15,21 +14,20 @@ damit der Inhalt der virtuellen Umgebung **NICHT** mit github-repo abgeglichen w
 ## Virtuelle Umgebung (.venv) erstellen und aktivieren
 python -m venv .venv
 
-.venv\Scripts\activate
+.venv/scripts/activate
 
 ## Django auf der virtuellen Umgebung (.venv) installieren
 
 pip install django
 
-Überprüfung von django  
+*Überprüfung von django*  
+
 python -m django --version
 
-## Django Projekt erstellen Name=poll_site
+## Django Projekt erstellen Name=quiz_project
 
 - in den Ordner wechseln in dem das Django Projekt erstellt werden soll
-- Unterordner **django** erstellen (nicht zwingend allerdings von mir gewünscht)
-- cd django
-- django-admin startproject poll_site  
+- **django-admin startproject quiz_project  **
 ````
 Note
 
@@ -41,7 +39,7 @@ or test (which conflicts with a built-in Python package).
 
 ## TEST: lokalen Django Server zum Test starten auf Port:8000
 
-- cd django/poll_site
+- cd quiz_project
 - optional django updaten mit: python manage.py migrate
 - python manage.py runserver
 - http://127.0.0.1:8000/
@@ -66,7 +64,7 @@ Projects vs. apps
 
 What’s the difference between a project and an app? An app is a web application that does something – e.g., a blog system, a database of public records or a small poll app. A project is a collection of configuration and apps for a particular website. A project can contain multiple apps. An app can be in multiple projects.
 ````
-- shell: python manage.py startapp poll_app
+- python manage.py startapp poll_app
 
 
 ## Erste View erstellen
@@ -77,12 +75,19 @@ What’s the difference between a project and an app? An app is a web applicatio
 #from django.shortcuts import render
 from django.http import HttpResponse
 
-def hello_world():
-    return HttpResponse("Anwort der View")
+from django.shortcuts import render
+from datetime import datetime
+import random
+
+def ask_new_question(request):
+    name = 'Ben Hanter'
+    wochentag = datetime.now().strftime('%A')
+    zahl = random.randint(1,100)
+    return render(request, 'index.html', {'wochentag' : wochentag, 'name' : name, 'zahl' : zahl} )
 ````
 
 ## In der poll_app, file urls.py erstellen
-- "django\poll_site\poll_app\" File: "**urls.py**" 
+- "\quiz_project\poll_site\poll_app\" File: "**urls.py**" 
 
 ````py
 from django.urls import path
@@ -90,10 +95,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-   path('', views.hello_world),
+    path('', views.ask_new_question),
 ]
 ````
-## django\poll_site\poll_site\urls.py, globale url-Konfiguration der Website anpassen
+## \quiz_project\urls.py, globale url-Konfiguration der Website anpassen
 
 Sollte danach im wesentlichen wie folgt ausssehen:
 
@@ -108,29 +113,38 @@ urlpatterns = [
 ````
 
 ## TEST: Server starten und Website testen
-- shell: python manage.py runserver
+- python manage.py runserver
 - http://127.0.0.1:8000/
 
 
 ## Datenbank anlegen
-"django\poll_site\poll_app\" File: **models.py**
+"\quiz_project\poll_app\" File: **models.py**
 ````py
 from django.db import models
-
+import datetime
+from django.utils import timezone
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField("date published")
 
+    def __str__(self):
+        return self.question_text
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+
+    def was_published_recently(self):
+        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+
+    def __str__(self):
+        return self.choice_text
 ````
 
 ## Angelegte Datenbank modelle aktivieren
-"django\poll_site\poll_site\" File: **settings.py**
+"\quiz_project\" File: **settings.py**
 - Bei INSTALLED_APPS 'poll_app' hinzufügen
 ````py
 INSTALLED_APPS = [
@@ -163,10 +177,9 @@ Migrationen ausführen
 - python manage.py createsuperuser
 - nache dem anlegen des superusers
 - python manage.py runserver
-- http://127.0.0.1:svkan8000/admin/
 
 ## poll_app in der admin seite registrieren
-"django\poll_site\poll_site\" File **admin.py**
+"\quiz_project\" File **admin.py**
 ````py
 from django.contrib import admin
 
@@ -175,11 +188,10 @@ from .models import Question
 admin.site.register(Question)
 
 ````
-http://127.0.0.1:svkan8000/admin/  
-
 
 Nun ist poll_app verbunden und es können die Registrierten Modelle bearbeitet werden  
 also, Datensätze können hinzugefügt oder geändert werden werden.
 
 
-## TODO: https://docs.djangoproject.com/en/5.1/intro/tutorial03/
+## TODO: Views ausarbeiten, aus Datenbank zur Ansicht und von der Ansicht in die Datenbank
+- https://docs.djangoproject.com/en/5.1/intro/tutorial03/
